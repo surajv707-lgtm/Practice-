@@ -1,174 +1,93 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nandu Area Shop</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Blink Market</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
-
-body{
-background:linear-gradient(135deg,#eef2ff,#f8fafc);
-color:#333;
+:root {
+    --green: #2e7d32;
+    --gold: #c8a951;
+    --bg: #f8f5f0;
 }
 
-/* HEADER */
-header{
-padding:20px;
-text-align:center;
-background:linear-gradient(135deg,#4f46e5,#3b82f6);
-color:#fff;
-border-bottom-left-radius:20px;
-border-bottom-right-radius:20px;
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
 }
 
-header h1{font-size:22px;}
-header p{font-size:13px;opacity:0.9}
-
-/* SEARCH */
-.search-box{
-padding:10px;
-}
-.search-box input{
-width:100%;
-padding:10px;
-border-radius:10px;
-border:none;
-box-shadow:0 3px 10px rgba(0,0,0,0.1);
+h1, h2, h3 {
+    font-family: Georgia, serif;
 }
 
-/* FILTER */
-.filters{
-display:flex;
-gap:10px;
-overflow:auto;
-padding:10px;
-}
-.filters button{
-padding:6px 12px;
-border:none;
-border-radius:20px;
-background:#e0e7ff;
-cursor:pointer;
-}
-.filters button.active{
-background:#4f46e5;color:#fff;
+header {
+    background: var(--green);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* PRODUCTS */
-.products{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:15px;
-padding:15px;
-}
-.card{
-background:#fff;
-padding:10px;
-border-radius:15px;
-box-shadow:0 6px 15px rgba(0,0,0,0.08);
-transition:0.2s;
-}
-.card:hover{transform:scale(1.03);}
-.card img{width:100%;border-radius:10px;}
-.card h3{font-size:14px;margin:6px 0;}
-.card p{font-size:11px;color:#666;}
-.price{font-weight:bold;margin:5px 0;}
-.add{
-width:100%;
-padding:6px;
-background:#4f46e5;
-color:#fff;
-border:none;
-border-radius:8px;
-cursor:pointer;
+nav a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
 }
 
-/* CART */
-.cart-btn{
-position:fixed;
-bottom:20px;
-right:20px;
-background:#4f46e5;
-color:#fff;
-padding:12px 15px;
-border-radius:50px;
-cursor:pointer;
+.cart-count {
+    background: var(--gold);
+    padding: 3px 7px;
+    border-radius: 50%;
 }
 
-.cart{
-position:fixed;
-top:0;
-right:-100%;
-width:100%;
-max-width:350px;
-height:100%;
-background:#fff;
-padding:15px;
-transition:0.3s;
-overflow:auto;
-}
-.cart.active{right:0;}
-
-.cart-item{
-display:flex;
-justify-content:space-between;
-margin:10px 0;
+.container {
+    padding: 20px;
 }
 
-/* FORM */
-form input,form textarea{
-width:100%;
-margin:5px 0;
-padding:8px;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
 }
 
-/* TRACKING */
-.tracking{
-padding:15px;
-}
-.tracking input{
-width:70%;
-padding:8px;
-}
-.tracking button{
-padding:8px;
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-/* ADMIN PANEL */
-.admin{
-position:fixed;
-top:0;
-left:-100%;
-width:100%;
-max-width:400px;
-height:100%;
-background:#111;
-color:#fff;
-padding:15px;
-overflow:auto;
-transition:0.3s;
-}
-.admin.active{left:0;}
-.admin button{
-margin:5px 0;
-padding:5px;
+.card:hover {
+    transform: scale(1.05);
 }
 
-/* WHATSAPP */
-.whatsapp{
-position:fixed;
-bottom:80px;
-right:20px;
-background:#25D366;
-color:#fff;
-padding:10px;
-border-radius:50px;
-text-decoration:none;
+button {
+    background: var(--green);
+    color: white;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background: var(--gold);
+}
+
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+}
+
+.hero {
+    background: var(--gold);
+    padding: 20px;
+    text-align: center;
 }
 </style>
 </head>
@@ -176,175 +95,246 @@ text-decoration:none;
 <body>
 
 <header>
-<h1>Nandu Area Shop</h1>
-<p>Fresh products delivered to your door</p>
+    <h2>Blink Market</h2>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#cart">Cart (<span id="cartCount">0</span>)</a>
+    </nav>
 </header>
 
-<div class="search-box">
-<input type="text" id="search" placeholder="Search products...">
-</div>
-
-<div class="filters" id="filters"></div>
-<div class="products" id="products"></div>
-
-<!-- TRACK ORDER -->
-<div class="tracking">
-<h3>Track Order</h3>
-<input id="trackId" placeholder="Enter Order ID">
-<button onclick="trackOrder()">Track</button>
-<p id="trackResult"></p>
-</div>
-
-<!-- CART BUTTON -->
-<div class="cart-btn" onclick="toggleCart()">
-🛒 (<span id="cart-count">0</span>)
-</div>
-
-<!-- CART -->
-<div class="cart" id="cart">
-<h2>Cart</h2>
-<div id="cart-items"></div>
-<h3>Total ₹<span id="total">0</span></h3>
-
-<form onsubmit="placeOrder(event)">
-<input required placeholder="Name" id="name">
-<input required placeholder="Phone" id="phone">
-<textarea required placeholder="Address" id="address"></textarea>
-<textarea placeholder="Notes" id="notes"></textarea>
-
-<button type="submit">Place Order</button>
-</form>
-</div>
-
-<!-- ADMIN -->
-<div class="admin" id="admin">
-<h2>Admin Dashboard</h2>
-<div id="orders"></div>
-<button onclick="clearOrders()">Clear Orders</button>
-</div>
-
-<a class="whatsapp" href="https://wa.me/919999999999">Chat</a>
+<div id="app"></div>
 
 <script>
-const products=[
-{name:"Milk",price:60,cat:"Dairy",img:"https://i.ibb.co/3.jpg",desc:"Fresh milk"},
-{name:"Butter",price:280,cat:"Dairy",img:"https://i.ibb.co/2.jpg",desc:"Amul butter"},
-{name:"Bread",price:40,cat:"Groceries",img:"https://i.ibb.co/4.jpg",desc:"Soft bread"},
-{name:"Chips",price:20,cat:"Snacks",img:"https://i.ibb.co/6.jpg",desc:"Crispy"},
-{name:"Juice",price:50,cat:"Beverages",img:"https://i.ibb.co/8.jpg",desc:"Fruit juice"},
-{name:"Biscuits",price:30,cat:"Snacks",img:"https://i.ibb.co/5.jpg",desc:"Tasty"},
-{name:"Coke",price:40,cat:"Beverages",img:"https://i.ibb.co/7.jpg",desc:"Cold drink"}
-];
-
-let cart=JSON.parse(localStorage.getItem("cart"))||[];
-let orders=JSON.parse(localStorage.getItem("orders"))||[];
-
-function renderProducts(){
-let s=document.getElementById("search").value.toLowerCase();
-let html="";
-products.filter(p=>p.name.toLowerCase().includes(s))
-.forEach(p=>{
-html+=`
-<div class="card">
-<img src="${p.img}" loading="lazy">
-<h3>${p.name}</h3>
-<p>${p.desc}</p>
-<div class="price">₹${p.price}</div>
-<button class="add" onclick='addToCart(${JSON.stringify(p)})'>Add</button>
-</div>`;
-});
-document.getElementById("products").innerHTML=html;
-}
-
-document.getElementById("search").addEventListener("input",renderProducts);
-
-function addToCart(p){
-let item=cart.find(i=>i.name===p.name);
-if(item){item.qty++}else{cart.push({...p,qty:1})}
-updateCart();
-}
-
-function updateCart(){
-localStorage.setItem("cart",JSON.stringify(cart));
-document.getElementById("cart-count").innerText=cart.length;
-
-let html="",total=0;
-cart.forEach((i,idx)=>{
-total+=i.price*i.qty;
-html+=`
-<div class="cart-item">
-${i.name} x ${i.qty}
-<div>
-<button onclick="changeQty(${idx},1)">+</button>
-<button onclick="changeQty(${idx},-1)">-</button>
-</div>
-</div>`;
-});
-document.getElementById("cart-items").innerHTML=html;
-document.getElementById("total").innerText=total;
-}
-
-function changeQty(i,v){
-cart[i].qty+=v;
-if(cart[i].qty<=0)cart.splice(i,1);
-updateCart();
-}
-
-function toggleCart(){
-document.getElementById("cart").classList.toggle("active");
-}
-
-function placeOrder(e){
-e.preventDefault();
-
-let id="ORD"+Date.now();
-let order={
-id,
-cart,
-total:document.getElementById("total").innerText,
-name:name.value,
-phone:phone.value,
-address:address.value
+/* ================= CONFIG ================= */
+const CONFIG = {
+    name: "Blink Market",
+    tagline: "Fast & Fresh Deals",
+    currency: "₹",
+    formspree: "YOUR_FORMSPREE_URL"
 };
 
-orders.push(order);
-localStorage.setItem("orders",JSON.stringify(orders));
-localStorage.removeItem("cart");
-cart=[];
-updateCart();
+/* ================= PRODUCTS ================= */
+const PRODUCTS = [
+{
+id:1,
+name:"Green Tea",
+price:199,
+category:"Drinks",
+description:"Healthy organic green tea",
+images:["https://via.placeholder.com/200"],
+stock:10
+},
+{
+id:2,
+name:"Honey",
+price:299,
+category:"Food",
+description:"Pure natural honey",
+images:["https://via.placeholder.com/200"],
+stock:15
+},
+{
+id:3,
+name:"Almonds",
+price:499,
+category:"Dry Fruits",
+description:"Premium almonds",
+images:["https://via.placeholder.com/200"],
+stock:8
+}
+];
 
-alert("Order placed! ID: "+id);
+/* ================= CART ================= */
+let cart = JSON.parse(localStorage.getItem("neo_cart")) || [];
+
+function saveCart(){
+    localStorage.setItem("neo_cart", JSON.stringify(cart));
+    updateCartCount();
 }
 
-function trackOrder(){
-let id=document.getElementById("trackId").value;
-let order=orders.find(o=>o.id===id);
-document.getElementById("trackResult").innerText=
-order?"Order Found! Preparing...":"Not found";
+function updateCartCount(){
+    document.getElementById("cartCount").innerText =
+        cart.reduce((a,c)=>a+c.qty,0);
 }
 
-/* ADMIN */
-document.body.addEventListener("dblclick",()=>{
-document.getElementById("admin").classList.toggle("active");
-renderAdmin();
+function addToCart(id){
+    let item = cart.find(i=>i.id===id);
+    if(item) item.qty++;
+    else cart.push({id, qty:1});
+    saveCart();
+    render();
+}
+
+function removeFromCart(id){
+    cart = cart.filter(i=>i.id!==id);
+    saveCart();
+    render();
+}
+
+/* ================= ROUTER ================= */
+function router(){
+    let hash = location.hash || "#home";
+
+    if(hash.startsWith("#product")){
+        let id = hash.split("=")[1];
+        productPage(id);
+    }
+    else if(hash === "#cart") cartPage();
+    else if(hash === "#checkout") checkoutPage();
+    else homePage();
+}
+
+/* ================= HOME ================= */
+function homePage(){
+    let html = `
+    <div class="hero">
+        <h1>${CONFIG.name}</h1>
+        <p>${CONFIG.tagline}</p>
+    </div>
+
+    <div class="container">
+    <div class="grid">
+    `;
+
+    PRODUCTS.forEach(p=>{
+        let inCart = cart.find(i=>i.id===p.id);
+
+        html += `
+        <div class="card" onclick="location.hash='#product=${p.id}'">
+            <img src="${p.images[0]}" width="100%">
+            <h3>${p.name}</h3>
+            <p>${CONFIG.currency}${p.price}</p>
+
+            <button onclick="event.stopPropagation(); addToCart(${p.id})">
+                ${inCart ? "In Cart ✓" : "Add to Cart"}
+            </button>
+        </div>`;
+    });
+
+    html += "</div></div>";
+    app.innerHTML = html;
+}
+
+/* ================= PRODUCT PAGE ================= */
+function productPage(id){
+    let p = PRODUCTS.find(x=>x.id==id);
+
+    let html = `
+    <div class="container">
+        <h2>${p.name}</h2>
+        <img src="${p.images[0]}" width="200">
+        <p>${p.description}</p>
+        <h3>${CONFIG.currency}${p.price}</h3>
+
+        <button onclick="addToCart(${p.id})">Add to Cart</button>
+    </div>
+    `;
+
+    app.innerHTML = html;
+}
+
+/* ================= CART PAGE ================= */
+function cartPage(){
+    let html = `<div class="container"><h2>Cart</h2>`;
+
+    if(cart.length===0){
+        html += "<p>Cart is empty</p>";
+    } else {
+        let total = 0;
+
+        cart.forEach(c=>{
+            let p = PRODUCTS.find(x=>x.id===c.id);
+            total += p.price * c.qty;
+
+            html += `
+            <div>
+                <h3>${p.name}</h3>
+                <p>${CONFIG.currency}${p.price} x ${c.qty}</p>
+
+                <button onclick="c.qty++; saveCart(); render()">+</button>
+                <button onclick="c.qty--; if(c.qty<=0) removeFromCart(${p.id}); saveCart(); render()">-</button>
+                <button onclick="removeFromCart(${p.id})">Remove</button>
+            </div>`;
+        });
+
+        html += `<h3>Total: ${CONFIG.currency}${total}</h3>
+        <button onclick="location.hash='#checkout'">Checkout</button>`;
+    }
+
+    html += "</div>";
+    app.innerHTML = html;
+}
+
+/* ================= CHECKOUT ================= */
+function checkoutPage(){
+    let total = cart.reduce((sum,c)=>{
+        let p = PRODUCTS.find(x=>x.id===c.id);
+        return sum + p.price*c.qty;
+    },0);
+
+    let html = `
+    <div class="container">
+        <h2>Checkout</h2>
+
+        <form id="checkoutForm">
+            <input placeholder="Name" required>
+            <input placeholder="Email" required>
+            <input placeholder="Phone" required>
+            <textarea placeholder="Address" required></textarea>
+            <textarea placeholder="Notes"></textarea>
+
+            <h3>Total: ${CONFIG.currency}${total}</h3>
+
+            <button type="submit">Place Order</button>
+        </form>
+
+        <div id="success" style="display:none;">
+            <h3>Order placed successfully!</h3>
+        </div>
+    </div>
+    `;
+
+    app.innerHTML = html;
+
+    document.getElementById("checkoutForm").onsubmit = function(e){
+        e.preventDefault();
+
+        fetch(CONFIG.formspree,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({cart})
+        });
+
+        document.getElementById("success").style.display="block";
+
+        cart = [];
+        saveCart();
+
+        setTimeout(()=>location.hash="#home",3000);
+    };
+}
+
+/* ================= BACK BUTTON LOGIC ================= */
+window.addEventListener("popstate", function () {
+    if (location.hash === "" || location.hash === "#home") {
+        // Exit site behavior (Android back)
+        if (confirm("Exit Blink Market?")) {
+            window.close();
+        }
+    } else {
+        router();
+    }
 });
 
-function renderAdmin(){
-let html="";
-orders.forEach(o=>{
-html+=`<p>${o.id} - ₹${o.total}</p>`;
-});
-document.getElementById("orders").innerHTML=html;
+/* ================= INIT ================= */
+function render(){
+    updateCartCount();
+    router();
 }
 
-function clearOrders(){
-localStorage.removeItem("orders");
-orders=[];
-renderAdmin();
-}
+window.addEventListener("hashchange", render);
+render();
 
-renderProducts();
-updateCart();
 </script>
 
 </body>
