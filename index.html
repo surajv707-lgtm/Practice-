@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +12,7 @@
 --red:#e53935;
 --blue:#1e88e5;
 --gold:#d4af37;
---white:#ffffff;
---bg:#f4f6f9;
+--bg:#f5f7fa;
 }
 
 body{
@@ -30,10 +30,20 @@ display:flex;
 justify-content:space-between;
 }
 
-nav a{
-color:white;
-margin:0 10px;
-text-decoration:none;
+/* SEARCH */
+.search-box{
+padding:10px;
+background:white;
+margin:10px;
+border-radius:8px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.search-box input{
+width:100%;
+border:none;
+outline:none;
+font-size:16px;
 }
 
 /* HERO */
@@ -44,28 +54,26 @@ padding:20px;
 }
 
 /* GRID */
-.container{padding:15px;}
+.container{padding:10px;}
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-gap:15px;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:12px;
 }
 
 /* CARD */
 .card{
 background:white;
 border-radius:12px;
-padding:12px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
+padding:10px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
 cursor:pointer;
-transition:0.3s;
 }
-.card:hover{transform:translateY(-5px);}
 
-/* BUTTON */
+/* BUTTONS */
 .btn{
-padding:8px;
+padding:6px 10px;
 border:none;
 border-radius:6px;
 cursor:pointer;
@@ -78,10 +86,10 @@ cursor:pointer;
 /* QTY */
 .qty{
 display:flex;
-align-items:center;
 justify-content:center;
-gap:8px;
-margin-top:8px;
+align-items:center;
+gap:6px;
+margin-top:6px;
 }
 
 /* CART */
@@ -92,24 +100,30 @@ border-radius:10px;
 margin-bottom:10px;
 }
 
-/* FORM */
-form{
+/* CHECKOUT */
+.checkout-box{
+max-width:400px;
+margin:30px auto;
 background:white;
-padding:15px;
-border-radius:10px;
+padding:20px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.15);
 }
 
 input,textarea{
 width:100%;
 padding:10px;
-margin:6px 0;
+margin:8px 0;
+border-radius:6px;
+border:1px solid #ccc;
 }
 
 .checkout-btn{
-background:var(--blue);
-color:white;
 width:100%;
 padding:10px;
+background:var(--blue);
+color:white;
+border:none;
 }
 
 </style>
@@ -119,39 +133,34 @@ padding:10px;
 
 <header>
 <h2>Blink Market</h2>
-<nav>
-<a href="#home">Home</a>
-<a href="#cart">Cart (<span id="count">0</span>)</a>
-</nav>
+<div>Cart (<span id="count">0</span>)</div>
 </header>
+
+<div class="search-box">
+<input placeholder="Search for products, groceries...">
+</div>
 
 <div id="app"></div>
 
 <script>
 
-/* PRODUCTS */
+/* PRODUCTS (15 items) */
 const PRODUCTS=[
-{
-id:1,
-name:"Green Tea",
-price:199,
-desc:"Healthy organic green tea",
-img:"https://via.placeholder.com/200"
-},
-{
-id:2,
-name:"Honey",
-price:299,
-desc:"Pure natural honey",
-img:"https://via.placeholder.com/200"
-},
-{
-id:3,
-name:"Almonds",
-price:499,
-desc:"Premium quality almonds",
-img:"https://via.placeholder.com/200"
-}
+{id:1,name:"Apple",price:120,img:"https://images.unsplash.com/photo-1567306226416-28f0efdc88ce",desc:"Fresh apples rich in fiber"},
+{id:2,name:"Banana",price:60,img:"https://images.unsplash.com/photo-1574226516831-e1dff420e43e",desc:"Healthy bananas"},
+{id:3,name:"Tomato",price:40,img:"https://images.unsplash.com/photo-1546094096-0df4bcaaa337",desc:"Fresh tomatoes"},
+{id:4,name:"Potato",price:30,img:"https://images.unsplash.com/photo-1582515073490-dc6c0f3a76c4",desc:"Organic potatoes"},
+{id:5,name:"Milk",price:55,img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b",desc:"Pure milk"},
+{id:6,name:"Bread",price:45,img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec",desc:"Fresh bread"},
+{id:7,name:"Eggs",price:90,img:"https://images.unsplash.com/photo-1585238342028-4e1e6b9bce8c",desc:"Farm eggs"},
+{id:8,name:"Chicken",price:220,img:"https://images.unsplash.com/photo-1604908176997-43144bb9c51d",desc:"Fresh chicken"},
+{id:9,name:"Rice",price:80,img:"https://images.unsplash.com/photo-1586201375761-83865001e17b",desc:"Premium rice"},
+{id:10,name:"Cheese",price:150,img:"https://images.unsplash.com/photo-1559561853-08451507cbe7",desc:"Delicious cheese"},
+{id:11,name:"Orange",price:70,img:"https://images.unsplash.com/photo-1580052614034-c55d20bfee3b",desc:"Juicy oranges"},
+{id:12,name:"Onion",price:35,img:"https://images.unsplash.com/photo-1582515073490-dc6c0f3a76c4",desc:"Fresh onions"},
+{id:13,name:"Carrot",price:50,img:"https://images.unsplash.com/photo-1582515073490-dc6c0f3a76c4",desc:"Healthy carrots"},
+{id:14,name:"Butter",price:120,img:"https://images.unsplash.com/photo-1585238342028-4e1e6b9bce8c",desc:"Pure butter"},
+{id:15,name:"Yogurt",price:60,img:"https://images.unsplash.com/photo-1585238342028-4e1e6b9bce8c",desc:"Fresh yogurt"}
 ];
 
 /* CART */
@@ -163,21 +172,20 @@ updateCount();
 }
 
 function updateCount(){
-document.getElementById("count").innerText=
-cart.reduce((a,c)=>a+c.qty,0);
+count.innerText=cart.reduce((a,c)=>a+c.qty,0);
 }
 
-function getQty(id){
-let item=cart.find(i=>i.id===id);
-return item?item.qty:0;
+function qty(id){
+let i=cart.find(x=>x.id===id);
+return i?i.qty:0;
 }
 
-function changeQty(id,val){
-let item=cart.find(i=>i.id===id);
+function change(id,val){
+let i=cart.find(x=>x.id===id);
 
-if(item){
-item.qty+=val;
-if(item.qty<=0) cart=cart.filter(i=>i.id!==id);
+if(i){
+i.qty+=val;
+if(i.qty<=0) cart=cart.filter(x=>x.id!==id);
 }else{
 cart.push({id,qty:1});
 }
@@ -188,34 +196,25 @@ render();
 
 /* HOME */
 function home(){
-let html=`
-<div class="hero">
-<h1>Blink Market</h1>
-<p>Fast Delivery ⚡</p>
-</div>
-
-<div class="container">
-<div class="grid">`;
+let html=`<div class="hero"><h1>Fast Delivery ⚡</h1></div>
+<div class="container"><div class="grid">`;
 
 PRODUCTS.forEach(p=>{
-let q=getQty(p.id);
+let q=qty(p.id);
 
 html+=`
 <div class="card" onclick="openProduct(${p.id})">
 <img src="${p.img}" width="100%">
-<h3>${p.name}</h3>
+<h4>${p.name}</h4>
 <p>₹${p.price}</p>
 
 ${q>0?`
 <div class="qty" onclick="event.stopPropagation()">
-<button class="btn minus" onclick="changeQty(${p.id},-1)">-</button>
+<button class="btn minus" onclick="change(${p.id},-1)">-</button>
 <span>${q}</span>
-<button class="btn plus" onclick="changeQty(${p.id},1)">+</button>
-</div>
-`:
-`<button class="btn add" onclick="event.stopPropagation();changeQty(${p.id},1)">
-Add to Cart
-</button>`}
+<button class="btn plus" onclick="change(${p.id},1)">+</button>
+</div>`:
+`<button class="btn add" onclick="event.stopPropagation();change(${p.id},1)">Add</button>`}
 
 </div>`;
 });
@@ -225,29 +224,29 @@ app.innerHTML=html;
 }
 
 /* PRODUCT PAGE */
-function openProduct(id){
-location.hash="#product="+id;
-}
+function openProduct(id){ location.hash="#product="+id; }
 
 function productPage(id){
 let p=PRODUCTS.find(x=>x.id==id);
-let q=getQty(p.id);
+let q=qty(p.id);
 
 app.innerHTML=`
 <div class="container">
 <h2>${p.name}</h2>
 <img src="${p.img}" width="100%">
 <p>${p.desc}</p>
+
+<p><b>Cooking Tip:</b> Use fresh ingredients and cook on medium heat for best taste.</p>
+
 <h3>₹${p.price}</h3>
 
 ${q>0?`
 <div class="qty">
-<button class="btn minus" onclick="changeQty(${p.id},-1)">-</button>
+<button class="btn minus" onclick="change(${p.id},-1)">-</button>
 <span>${q}</span>
-<button class="btn plus" onclick="changeQty(${p.id},1)">+</button>
-</div>
-`:
-`<button class="btn add" onclick="changeQty(${p.id},1)">Add to Cart</button>`}
+<button class="btn plus" onclick="change(${p.id},1)">+</button>
+</div>`:
+`<button class="btn add" onclick="change(${p.id},1)">Add to Cart</button>`}
 
 </div>`;
 }
@@ -257,9 +256,6 @@ function cartPage(){
 let total=0;
 let html=`<div class="container"><h2>Your Cart</h2>`;
 
-if(cart.length===0){
-html+="<p>Cart is empty</p>";
-}else{
 cart.forEach(c=>{
 let p=PRODUCTS.find(x=>x.id===c.id);
 total+=p.price*c.qty;
@@ -267,25 +263,20 @@ total+=p.price*c.qty;
 html+=`
 <div class="cart-item">
 <h3>${p.name}</h3>
+<p>₹${p.price*c.qty}</p>
 
 <div class="qty">
-<button class="btn minus" onclick="changeQty(${p.id},-1)">-</button>
+<button class="btn minus" onclick="change(${p.id},-1)">-</button>
 <span>${c.qty}</span>
-<button class="btn plus" onclick="changeQty(${p.id},1)">+</button>
+<button class="btn plus" onclick="change(${p.id},1)">+</button>
 </div>
-
-<p>₹${p.price*c.qty}</p>
 </div>`;
 });
 
-html+=`
-<h2>Total ₹${total}</h2>
-<button class="checkout-btn" onclick="location.hash='#checkout'">
-Proceed to Checkout
-</button>`;
-}
+html+=`<h2>Total ₹${total}</h2>
+<button class="checkout-btn" onclick="location.hash='#checkout'">Checkout</button>
+</div>`;
 
-html+="</div>";
 app.innerHTML=html;
 }
 
@@ -297,39 +288,27 @@ return s+p.price*c.qty;
 },0);
 
 app.innerHTML=`
-<div class="container">
+<div class="checkout-box">
 <h2>Checkout</h2>
 
-<form id="form">
-<input placeholder="Name" required>
-<input placeholder="Email" required>
-<input placeholder="Phone" required>
-<textarea placeholder="Address" required></textarea>
+<input placeholder="Name">
+<input placeholder="Email">
+<input placeholder="Phone">
+<textarea placeholder="Address"></textarea>
 
 <h3>Total ₹${total}</h3>
-<button class="checkout-btn">Place Order</button>
-</form>
-</div>
-`;
 
-document.getElementById("form").onsubmit=(e)=>{
-e.preventDefault();
-alert("Order placed successfully!");
-cart=[];
-save();
-location.hash="#home";
-};
+<button class="checkout-btn">Place Order</button>
+</div>`;
 }
 
 /* ROUTER */
 function router(){
-let hash=location.hash||"#home";
+let h=location.hash||"#home";
 
-if(hash.startsWith("#product")){
-productPage(hash.split("=")[1]);
-}
-else if(hash=="#cart") cartPage();
-else if(hash=="#checkout") checkoutPage();
+if(h.startsWith("#product")) productPage(h.split("=")[1]);
+else if(h=="#cart") cartPage();
+else if(h=="#checkout") checkoutPage();
 else home();
 }
 
