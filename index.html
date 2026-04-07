@@ -1,16 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Blink Market</title>
 
 <style>
 :root{
 --red:#e53935;
 --blue:#1e88e5;
---gold:#d4af37;
+--gold:#b8962e;
 --bg:#f5f7fa;
 }
 
@@ -20,7 +20,7 @@ body{margin:0;font-family:Arial;background:var(--bg);}
 header{
 background:var(--blue);
 color:white;
-padding:12px;
+padding:14px;
 display:flex;
 justify-content:space-between;
 }
@@ -33,11 +33,13 @@ padding:10px;
 }
 .toggle button{
 flex:1;
-padding:8px;
+padding:10px;
 border:none;
-border-radius:6px;
+border-radius:8px;
+background:#ddd;
+font-weight:bold;
 }
-.active{background:var(--gold);}
+.active{background:var(--gold);color:white;}
 
 /* SEARCH */
 .search{
@@ -45,37 +47,44 @@ padding:10px;
 }
 .search input{
 width:100%;
-padding:10px;
-border-radius:6px;
+padding:14px;
+border-radius:10px;
 border:1px solid #ccc;
+font-size:16px;
 }
 
 /* HERO */
 .hero{
 text-align:center;
-padding:10px;
-font-size:14px;
+padding:8px;
 background:var(--gold);
+color:white;
+font-weight:bold;
 }
 
 /* GRID */
-.container{padding:10px;}
+.container{padding:12px;}
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:10px;
+grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+gap:12px;
 }
 
 /* CARD */
 .card{
 background:white;
+border-radius:12px;
 padding:10px;
-border-radius:10px;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
 cursor:pointer;
 }
 
 /* BUTTON */
-.btn{padding:6px;border:none;border-radius:5px;}
+.btn{
+padding:6px;
+border:none;
+border-radius:6px;
+}
 .add{background:var(--red);color:white;width:100%;}
 .plus{background:var(--blue);color:white;}
 .minus{background:var(--gold);}
@@ -85,7 +94,7 @@ cursor:pointer;
 display:flex;
 justify-content:center;
 gap:6px;
-margin-top:5px;
+margin-top:6px;
 }
 
 /* CART BAR */
@@ -96,19 +105,48 @@ left:0;
 right:0;
 background:var(--blue);
 color:white;
-padding:10px;
+padding:12px;
 display:flex;
 justify-content:space-between;
+align-items:center;
+}
+
+/* CART ITEM */
+.cart-item{
+background:white;
+padding:12px;
+border-radius:10px;
+margin-bottom:10px;
 }
 
 /* CHECKOUT */
 .checkout{
 max-width:400px;
-margin:30px auto;
+margin:40px auto;
 background:white;
 padding:20px;
-border-radius:10px;
+border-radius:12px;
+box-shadow:0 4px 15px rgba(0,0,0,0.2);
 }
+
+input,textarea{
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.checkout button{
+width:100%;
+padding:12px;
+background:var(--blue);
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+}
+
 </style>
 </head>
 
@@ -125,7 +163,7 @@ border-radius:10px;
 </div>
 
 <div class="search">
-<input id="search" placeholder="Search groceries...">
+<input id="search" placeholder="Search for groceries...">
 </div>
 
 <div class="hero">Fast Delivery ⚡</div>
@@ -135,23 +173,22 @@ border-radius:10px;
 
 <script>
 
-/* DATA */
 let mode="grocery";
 
-const grocery=[ ...Array(12).keys() ].map(i=>({
+const grocery=[...Array(12)].map((_,i)=>({
 id:i+1,
 name:"Grocery "+(i+1),
 price:50+i*10,
-img:"https://source.unsplash.com/200x200/?grocery,food,"+i,
-desc:"Fresh grocery item"
+img:`https://source.unsplash.com/200x200/?grocery,food,${i}`,
+desc:"Fresh grocery item with best quality and hygiene."
 }));
 
-const food=[ ...Array(12).keys() ].map(i=>({
+const food=[...Array(12)].map((_,i)=>({
 id:100+i,
 name:"Food "+(i+1),
-price:100+i*20,
-img:"https://source.unsplash.com/200x200/?meal,food,"+i,
-desc:"Delicious cooked food"
+price:120+i*20,
+img:`https://source.unsplash.com/200x200/?meal,food,${i}`,
+desc:"Delicious ready-to-eat food prepared fresh."
 }));
 
 let cart=JSON.parse(localStorage.getItem("neo_cart"))||[];
@@ -184,7 +221,7 @@ save(); render();
 
 /* HOME */
 function home(){
-let list=(mode=="grocery"?grocery:food)
+let list=(mode==="grocery"?grocery:food)
 .filter(p=>p.name.toLowerCase().includes(search.value.toLowerCase()));
 
 let html=`<div class="container"><div class="grid">`;
@@ -194,7 +231,7 @@ let q=qty(p.id);
 
 html+=`
 <div class="card" onclick="openProduct(${p.id})">
-<img src="${p.img}" width="100%">
+<img src="${p.img}" width="100%" style="border-radius:8px;">
 <h4>${p.name}</h4>
 <p>₹${p.price}</p>
 
@@ -223,8 +260,8 @@ let q=qty(p.id);
 
 app.innerHTML=`
 <div class="container">
+<img src="${p.img}" width="100%" style="border-radius:10px;">
 <h2>${p.name}</h2>
-<img src="${p.img}" width="100%">
 <p>${p.desc}</p>
 <h3>₹${p.price}</h3>
 
@@ -241,14 +278,14 @@ ${q>0?`
 /* CART */
 function cartPage(){
 let total=0;
-let html=`<div class="container"><h2>Cart</h2>`;
+let html=`<div class="container"><h2>Your Cart</h2>`;
 
 cart.forEach(c=>{
 let p=[...grocery,...food].find(x=>x.id===c.id);
 total+=p.price*c.qty;
 
 html+=`
-<div class="card">
+<div class="cart-item">
 <h4>${p.name}</h4>
 <p>₹${p.price*c.qty}</p>
 <div class="qty">
@@ -261,6 +298,7 @@ html+=`
 
 html+=`<h3>Total ₹${total}</h3>
 <button onclick="location.hash='#checkout'">Checkout</button></div>`;
+
 app.innerHTML=html;
 }
 
@@ -283,8 +321,10 @@ app.innerHTML=`
 }
 
 /* CART BAR */
-function cartBar(){
-if(location.hash=="#cart"){ cartBar.innerHTML=""; return; }
+function cartBarUI(){
+if(location.hash=="#cart"||location.hash=="#checkout"){
+cartBar.innerHTML=""; return;
+}
 
 let total=cart.reduce((s,c)=>{
 let p=[...grocery,...food].find(x=>x.id===c.id);
@@ -309,14 +349,31 @@ else if(h=="#cart") cartPage();
 else if(h=="#checkout") checkoutPage();
 else home();
 
-cartBar();
+cartBarUI();
 }
 
 /* EVENTS */
-gBtn.onclick=()=>{mode="grocery";search.placeholder="Search groceries...";render();}
-fBtn.onclick=()=>{mode="food";search.placeholder="Search food...";render();}
+gBtn.onclick=()=>{
+mode="grocery";
+search.placeholder="Search for groceries...";
+gBtn.classList.add("active");
+fBtn.classList.remove("active");
+search.focus();
+render();
+};
+
+fBtn.onclick=()=>{
+mode="food";
+search.placeholder="Search for food...";
+fBtn.classList.add("active");
+gBtn.classList.remove("active");
+search.focus();
+render();
+};
+
 search.oninput=render;
 
+/* INIT */
 function render(){
 updateCount();
 router();
