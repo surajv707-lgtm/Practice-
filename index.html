@@ -3,91 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Blink Market</title>
 
 <style>
 :root {
-    --green: #2e7d32;
-    --gold: #c8a951;
-    --bg: #f8f5f0;
+    --red: #c62828;
+    --blue: #1565c0;
+    --gold: #d4af37;
+    --bg: #f5f5f5;
 }
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     background: var(--bg);
 }
 
-h1, h2, h3 {
+h1,h2,h3 {
     font-family: Georgia, serif;
 }
 
 header {
-    background: var(--green);
+    background: var(--blue);
     color: white;
     padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display:flex;
+    justify-content:space-between;
 }
 
 nav a {
-    color: white;
-    margin: 0 10px;
-    text-decoration: none;
+    color:white;
+    margin:0 10px;
+    text-decoration:none;
 }
 
 .cart-count {
     background: var(--gold);
     padding: 3px 7px;
-    border-radius: 50%;
+    border-radius:50%;
 }
 
-.container {
-    padding: 20px;
-}
+.container { padding:20px; }
 
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
 }
 
 .card {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    transition:0.3s;
+    cursor:pointer;
 }
 
-.card:hover {
-    transform: scale(1.05);
-}
+.card:hover { transform:scale(1.05); }
 
 button {
-    background: var(--green);
-    color: white;
-    border: none;
-    padding: 8px;
-    cursor: pointer;
-    border-radius: 5px;
+    border:none;
+    padding:6px 10px;
+    cursor:pointer;
+    border-radius:5px;
 }
 
-button:hover {
-    background: var(--gold);
-}
-
-input, textarea {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0;
-}
+.btn-add { background:var(--red); color:white; }
+.btn-plus { background:var(--blue); color:white; }
+.btn-minus { background:var(--gold); }
 
 .hero {
     background: var(--gold);
-    padding: 20px;
-    text-align: center;
+    padding:20px;
+    text-align:center;
+}
+.qty-box {
+    display:flex;
+    align-items:center;
+    gap:5px;
 }
 </style>
 </head>
@@ -105,46 +99,20 @@ input, textarea {
 <div id="app"></div>
 
 <script>
-/* ================= CONFIG ================= */
+/* CONFIG */
 const CONFIG = {
-    name: "Blink Market",
-    tagline: "Fast & Fresh Deals",
     currency: "₹",
     formspree: "YOUR_FORMSPREE_URL"
 };
 
-/* ================= PRODUCTS ================= */
+/* PRODUCTS */
 const PRODUCTS = [
-{
-id:1,
-name:"Green Tea",
-price:199,
-category:"Drinks",
-description:"Healthy organic green tea",
-images:["https://via.placeholder.com/200"],
-stock:10
-},
-{
-id:2,
-name:"Honey",
-price:299,
-category:"Food",
-description:"Pure natural honey",
-images:["https://via.placeholder.com/200"],
-stock:15
-},
-{
-id:3,
-name:"Almonds",
-price:499,
-category:"Dry Fruits",
-description:"Premium almonds",
-images:["https://via.placeholder.com/200"],
-stock:8
-}
+{ id:1,name:"Green Tea",price:199,category:"Drinks",description:"Healthy tea",images:["https://via.placeholder.com/200"],stock:10},
+{ id:2,name:"Honey",price:299,category:"Food",description:"Pure honey",images:["https://via.placeholder.com/200"],stock:15},
+{ id:3,name:"Almonds",price:499,category:"Dry Fruits",description:"Premium almonds",images:["https://via.placeholder.com/200"],stock:8}
 ];
 
-/* ================= CART ================= */
+/* CART */
 let cart = JSON.parse(localStorage.getItem("neo_cart")) || [];
 
 function saveCart(){
@@ -157,47 +125,50 @@ function updateCartCount(){
         cart.reduce((a,c)=>a+c.qty,0);
 }
 
-function addToCart(id){
+function getQty(id){
     let item = cart.find(i=>i.id===id);
-    if(item) item.qty++;
-    else cart.push({id, qty:1});
+    return item ? item.qty : 0;
+}
+
+function changeQty(id,delta){
+    let item = cart.find(i=>i.id===id);
+
+    if(item){
+        item.qty += delta;
+        if(item.qty <= 0) cart = cart.filter(i=>i.id!==id);
+    } else if(delta > 0){
+        cart.push({id,qty:1});
+    }
+
     saveCart();
     render();
 }
 
-function removeFromCart(id){
-    cart = cart.filter(i=>i.id!==id);
-    saveCart();
-    render();
-}
-
-/* ================= ROUTER ================= */
+/* ROUTER */
 function router(){
     let hash = location.hash || "#home";
 
     if(hash.startsWith("#product")){
-        let id = hash.split("=")[1];
-        productPage(id);
+        productPage(hash.split("=")[1]);
     }
-    else if(hash === "#cart") cartPage();
-    else if(hash === "#checkout") checkoutPage();
+    else if(hash=="#cart") cartPage();
+    else if(hash=="#checkout") checkoutPage();
     else homePage();
 }
 
-/* ================= HOME ================= */
+/* HOME */
 function homePage(){
     let html = `
     <div class="hero">
-        <h1>${CONFIG.name}</h1>
-        <p>${CONFIG.tagline}</p>
+        <h1>Blink Market</h1>
+        <p>Fast & Fresh Deals</p>
     </div>
 
     <div class="container">
-    <div class="grid">
-    `;
+    <div class="grid">`;
 
     PRODUCTS.forEach(p=>{
-        let inCart = cart.find(i=>i.id===p.id);
+        let qty = getQty(p.id);
 
         html += `
         <div class="card" onclick="location.hash='#product=${p.id}'">
@@ -205,9 +176,17 @@ function homePage(){
             <h3>${p.name}</h3>
             <p>${CONFIG.currency}${p.price}</p>
 
-            <button onclick="event.stopPropagation(); addToCart(${p.id})">
-                ${inCart ? "In Cart ✓" : "Add to Cart"}
+            ${qty > 0 ? `
+            <div class="qty-box" onclick="event.stopPropagation()">
+                <button class="btn-minus" onclick="changeQty(${p.id},-1)">-</button>
+                <span>${qty}</span>
+                <button class="btn-plus" onclick="changeQty(${p.id},1)">+</button>
+            </div>
+            ` : `
+            <button class="btn-add" onclick="event.stopPropagation(); changeQty(${p.id},1)">
+                Add to Cart
             </button>
+            `}
         </div>`;
     });
 
@@ -215,45 +194,50 @@ function homePage(){
     app.innerHTML = html;
 }
 
-/* ================= PRODUCT PAGE ================= */
+/* PRODUCT PAGE */
 function productPage(id){
     let p = PRODUCTS.find(x=>x.id==id);
+    let qty = getQty(p.id);
 
-    let html = `
+    app.innerHTML = `
     <div class="container">
         <h2>${p.name}</h2>
         <img src="${p.images[0]}" width="200">
         <p>${p.description}</p>
         <h3>${CONFIG.currency}${p.price}</h3>
 
-        <button onclick="addToCart(${p.id})">Add to Cart</button>
-    </div>
-    `;
-
-    app.innerHTML = html;
+        ${qty>0 ? `
+        <div class="qty-box">
+            <button class="btn-minus" onclick="changeQty(${p.id},-1)">-</button>
+            <span>${qty}</span>
+            <button class="btn-plus" onclick="changeQty(${p.id},1)">+</button>
+        </div>` :
+        `<button class="btn-add" onclick="changeQty(${p.id},1)">Add to Cart</button>`
+        }
+    </div>`;
 }
 
-/* ================= CART PAGE ================= */
+/* CART PAGE */
 function cartPage(){
     let html = `<div class="container"><h2>Cart</h2>`;
 
-    if(cart.length===0){
-        html += "<p>Cart is empty</p>";
+    if(cart.length==0){
+        html += "<p>Empty cart</p>";
     } else {
-        let total = 0;
+        let total=0;
 
         cart.forEach(c=>{
             let p = PRODUCTS.find(x=>x.id===c.id);
-            total += p.price * c.qty;
+            total += p.price*c.qty;
 
             html += `
             <div>
                 <h3>${p.name}</h3>
-                <p>${CONFIG.currency}${p.price} x ${c.qty}</p>
-
-                <button onclick="c.qty++; saveCart(); render()">+</button>
-                <button onclick="c.qty--; if(c.qty<=0) removeFromCart(${p.id}); saveCart(); render()">-</button>
-                <button onclick="removeFromCart(${p.id})">Remove</button>
+                <div class="qty-box">
+                    <button class="btn-minus" onclick="changeQty(${p.id},-1)">-</button>
+                    <span>${c.qty}</span>
+                    <button class="btn-plus" onclick="changeQty(${p.id},1)">+</button>
+                </div>
             </div>`;
         });
 
@@ -265,38 +249,34 @@ function cartPage(){
     app.innerHTML = html;
 }
 
-/* ================= CHECKOUT ================= */
+/* CHECKOUT */
 function checkoutPage(){
-    let total = cart.reduce((sum,c)=>{
+    let total = cart.reduce((s,c)=>{
         let p = PRODUCTS.find(x=>x.id===c.id);
-        return sum + p.price*c.qty;
+        return s + p.price*c.qty;
     },0);
 
-    let html = `
+    app.innerHTML = `
     <div class="container">
         <h2>Checkout</h2>
 
-        <form id="checkoutForm">
-            <input placeholder="Name" required>
-            <input placeholder="Email" required>
-            <input placeholder="Phone" required>
-            <textarea placeholder="Address" required></textarea>
+        <form id="form">
+            <input required placeholder="Name">
+            <input required placeholder="Email">
+            <input required placeholder="Phone">
+            <textarea required placeholder="Address"></textarea>
             <textarea placeholder="Notes"></textarea>
 
             <h3>Total: ${CONFIG.currency}${total}</h3>
-
             <button type="submit">Place Order</button>
         </form>
 
         <div id="success" style="display:none;">
-            <h3>Order placed successfully!</h3>
+            <h3>Order successful!</h3>
         </div>
-    </div>
-    `;
+    </div>`;
 
-    app.innerHTML = html;
-
-    document.getElementById("checkoutForm").onsubmit = function(e){
+    document.getElementById("form").onsubmit = function(e){
         e.preventDefault();
 
         fetch(CONFIG.formspree,{
@@ -305,28 +285,28 @@ function checkoutPage(){
             body:JSON.stringify({cart})
         });
 
-        document.getElementById("success").style.display="block";
-
-        cart = [];
+        cart=[];
         saveCart();
+
+        document.getElementById("success").style.display="block";
 
         setTimeout(()=>location.hash="#home",3000);
     };
 }
 
-/* ================= BACK BUTTON LOGIC ================= */
-window.addEventListener("popstate", function () {
-    if (location.hash === "" || location.hash === "#home") {
-        // Exit site behavior (Android back)
-        if (confirm("Exit Blink Market?")) {
-            window.close();
-        }
-    } else {
-        router();
-    }
-});
+/* BACK BUTTON FIX */
+history.pushState(null,null,location.href);
 
-/* ================= INIT ================= */
+window.onpopstate = function(){
+    if(location.hash==="" || location.hash=="#home"){
+        // exit silently (no popup)
+        window.location.href = "about:blank";
+    } else {
+        history.back();
+    }
+};
+
+/* INIT */
 function render(){
     updateCartCount();
     router();
@@ -334,7 +314,6 @@ function render(){
 
 window.addEventListener("hashchange", render);
 render();
-
 </script>
 
 </body>
