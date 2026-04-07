@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,128 +9,166 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-* {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins}
 
-body {background:#f5f7fb; color:#333;}
-
-header {
-    background:#2c7be5;
-    color:#fff;
-    padding:20px;
-    text-align:center;
+body{
+background:linear-gradient(135deg,#eef2ff,#f8fafc);
+color:#333;
 }
 
-header h1 {font-size:24px;}
-header p {font-size:14px;}
-
-.filters {
-    display:flex;
-    overflow:auto;
-    gap:10px;
-    padding:10px;
-    background:#fff;
+/* HEADER */
+header{
+padding:20px;
+text-align:center;
+background:linear-gradient(135deg,#4f46e5,#3b82f6);
+color:#fff;
+border-bottom-left-radius:20px;
+border-bottom-right-radius:20px;
 }
 
-.filters button {
-    padding:8px 14px;
-    border:none;
-    background:#e3e8f0;
-    border-radius:20px;
-    cursor:pointer;
+header h1{font-size:22px;}
+header p{font-size:13px;opacity:0.9}
+
+/* SEARCH */
+.search-box{
+padding:10px;
+}
+.search-box input{
+width:100%;
+padding:10px;
+border-radius:10px;
+border:none;
+box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
 
-.filters button.active {
-    background:#2c7be5;
-    color:#fff;
+/* FILTER */
+.filters{
+display:flex;
+gap:10px;
+overflow:auto;
+padding:10px;
+}
+.filters button{
+padding:6px 12px;
+border:none;
+border-radius:20px;
+background:#e0e7ff;
+cursor:pointer;
+}
+.filters button.active{
+background:#4f46e5;color:#fff;
 }
 
-.products {
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-    gap:15px;
-    padding:15px;
+/* PRODUCTS */
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:15px;
+padding:15px;
+}
+.card{
+background:#fff;
+padding:10px;
+border-radius:15px;
+box-shadow:0 6px 15px rgba(0,0,0,0.08);
+transition:0.2s;
+}
+.card:hover{transform:scale(1.03);}
+.card img{width:100%;border-radius:10px;}
+.card h3{font-size:14px;margin:6px 0;}
+.card p{font-size:11px;color:#666;}
+.price{font-weight:bold;margin:5px 0;}
+.add{
+width:100%;
+padding:6px;
+background:#4f46e5;
+color:#fff;
+border:none;
+border-radius:8px;
+cursor:pointer;
 }
 
-.card {
-    background:#fff;
-    border-radius:12px;
-    padding:10px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.05);
+/* CART */
+.cart-btn{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#4f46e5;
+color:#fff;
+padding:12px 15px;
+border-radius:50px;
+cursor:pointer;
 }
 
-.card img {
-    width:100%;
-    border-radius:10px;
+.cart{
+position:fixed;
+top:0;
+right:-100%;
+width:100%;
+max-width:350px;
+height:100%;
+background:#fff;
+padding:15px;
+transition:0.3s;
+overflow:auto;
+}
+.cart.active{right:0;}
+
+.cart-item{
+display:flex;
+justify-content:space-between;
+margin:10px 0;
 }
 
-.card h3 {font-size:14px; margin:8px 0;}
-.card p {font-size:12px; color:#777;}
-.price {font-weight:bold; margin:5px 0;}
-
-button.add {
-    width:100%;
-    padding:8px;
-    border:none;
-    background:#2c7be5;
-    color:#fff;
-    border-radius:8px;
-    cursor:pointer;
+/* FORM */
+form input,form textarea{
+width:100%;
+margin:5px 0;
+padding:8px;
 }
 
-/* Cart Button */
-.cart-btn {
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    background:#2c7be5;
-    color:#fff;
-    padding:12px 15px;
-    border-radius:50px;
-    cursor:pointer;
+/* TRACKING */
+.tracking{
+padding:15px;
+}
+.tracking input{
+width:70%;
+padding:8px;
+}
+.tracking button{
+padding:8px;
 }
 
-.cart-modal {
-    position:fixed;
-    top:0;
-    right:-100%;
-    width:100%;
-    max-width:350px;
-    height:100%;
-    background:#fff;
-    transition:0.3s;
-    padding:15px;
-    overflow:auto;
+/* ADMIN PANEL */
+.admin{
+position:fixed;
+top:0;
+left:-100%;
+width:100%;
+max-width:400px;
+height:100%;
+background:#111;
+color:#fff;
+padding:15px;
+overflow:auto;
+transition:0.3s;
+}
+.admin.active{left:0;}
+.admin button{
+margin:5px 0;
+padding:5px;
 }
 
-.cart-modal.active {right:0;}
-
-.cart-item {
-    display:flex;
-    justify-content:space-between;
-    margin:10px 0;
-}
-
-.cart-item button {
-    padding:2px 6px;
-}
-
-/* Form */
-form input, form textarea {
-    width:100%;
-    margin:5px 0;
-    padding:8px;
-}
-
-/* WhatsApp */
-.whatsapp {
-    position:fixed;
-    bottom:80px;
-    right:20px;
-    background:#25D366;
-    color:#fff;
-    padding:10px 15px;
-    border-radius:50px;
-    text-decoration:none;
+/* WHATSAPP */
+.whatsapp{
+position:fixed;
+bottom:80px;
+right:20px;
+background:#25D366;
+color:#fff;
+padding:10px;
+border-radius:50px;
+text-decoration:none;
 }
 </style>
 </head>
@@ -141,106 +180,113 @@ form input, form textarea {
 <p>Fresh products delivered to your door</p>
 </header>
 
-<div class="filters" id="filters"></div>
+<div class="search-box">
+<input type="text" id="search" placeholder="Search products...">
+</div>
 
+<div class="filters" id="filters"></div>
 <div class="products" id="products"></div>
 
+<!-- TRACK ORDER -->
+<div class="tracking">
+<h3>Track Order</h3>
+<input id="trackId" placeholder="Enter Order ID">
+<button onclick="trackOrder()">Track</button>
+<p id="trackResult"></p>
+</div>
+
+<!-- CART BUTTON -->
 <div class="cart-btn" onclick="toggleCart()">
 🛒 (<span id="cart-count">0</span>)
 </div>
 
-<div class="cart-modal" id="cart">
+<!-- CART -->
+<div class="cart" id="cart">
 <h2>Cart</h2>
 <div id="cart-items"></div>
-<h3>Total: ₹<span id="total">0</span></h3>
+<h3>Total ₹<span id="total">0</span></h3>
 
-<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" onsubmit="prepareOrder()">
-<input type="hidden" name="order" id="order-data">
-
-<input required placeholder="Your Name" name="name">
-<input required placeholder="Phone Number" name="phone">
-<textarea required placeholder="Address" name="address"></textarea>
-<textarea placeholder="Instructions" name="notes"></textarea>
+<form onsubmit="placeOrder(event)">
+<input required placeholder="Name" id="name">
+<input required placeholder="Phone" id="phone">
+<textarea required placeholder="Address" id="address"></textarea>
+<textarea placeholder="Notes" id="notes"></textarea>
 
 <button type="submit">Place Order</button>
 </form>
 </div>
 
+<!-- ADMIN -->
+<div class="admin" id="admin">
+<h2>Admin Dashboard</h2>
+<div id="orders"></div>
+<button onclick="clearOrders()">Clear Orders</button>
+</div>
+
 <a class="whatsapp" href="https://wa.me/919999999999">Chat</a>
 
 <script>
-const products = [
-{name:"Aashirvaad Atta", price:280, cat:"Groceries", img:"https://i.ibb.co/1.jpg", desc:"Premium wheat flour"},
-{name:"Amul Butter", price:280, cat:"Dairy", img:"https://i.ibb.co/2.jpg", desc:"Fresh butter"},
-{name:"Milk 1L", price:60, cat:"Dairy", img:"https://i.ibb.co/3.jpg", desc:"Fresh milk"},
-{name:"Bread", price:40, cat:"Groceries", img:"https://i.ibb.co/4.jpg", desc:"Soft bread"},
-{name:"Biscuits", price:30, cat:"Snacks", img:"https://i.ibb.co/5.jpg", desc:"Crunchy"},
-{name:"Chips", price:20, cat:"Snacks", img:"https://i.ibb.co/6.jpg", desc:"Spicy chips"},
-{name:"Coke", price:40, cat:"Beverages", img:"https://i.ibb.co/7.jpg", desc:"Cold drink"},
-{name:"Juice", price:50, cat:"Beverages", img:"https://i.ibb.co/8.jpg", desc:"Fruit juice"}
+const products=[
+{name:"Milk",price:60,cat:"Dairy",img:"https://i.ibb.co/3.jpg",desc:"Fresh milk"},
+{name:"Butter",price:280,cat:"Dairy",img:"https://i.ibb.co/2.jpg",desc:"Amul butter"},
+{name:"Bread",price:40,cat:"Groceries",img:"https://i.ibb.co/4.jpg",desc:"Soft bread"},
+{name:"Chips",price:20,cat:"Snacks",img:"https://i.ibb.co/6.jpg",desc:"Crispy"},
+{name:"Juice",price:50,cat:"Beverages",img:"https://i.ibb.co/8.jpg",desc:"Fruit juice"},
+{name:"Biscuits",price:30,cat:"Snacks",img:"https://i.ibb.co/5.jpg",desc:"Tasty"},
+{name:"Coke",price:40,cat:"Beverages",img:"https://i.ibb.co/7.jpg",desc:"Cold drink"}
 ];
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+let orders=JSON.parse(localStorage.getItem("orders"))||[];
 
-function renderProducts(filter="All"){
-const container = document.getElementById("products");
-container.innerHTML="";
-
-products.filter(p=>filter==="All"||p.cat===filter)
+function renderProducts(){
+let s=document.getElementById("search").value.toLowerCase();
+let html="";
+products.filter(p=>p.name.toLowerCase().includes(s))
 .forEach(p=>{
-container.innerHTML+=`
+html+=`
 <div class="card">
-<img src="${p.img}" loading="lazy" alt="${p.name}">
+<img src="${p.img}" loading="lazy">
 <h3>${p.name}</h3>
 <p>${p.desc}</p>
 <div class="price">₹${p.price}</div>
 <button class="add" onclick='addToCart(${JSON.stringify(p)})'>Add</button>
 </div>`;
 });
+document.getElementById("products").innerHTML=html;
 }
 
-function renderFilters(){
-const cats=["All",...new Set(products.map(p=>p.cat))];
-const container=document.getElementById("filters");
+document.getElementById("search").addEventListener("input",renderProducts);
 
-cats.forEach(c=>{
-container.innerHTML+=`<button onclick="renderProducts('${c}')">${c}</button>`;
-});
-}
-
-function addToCart(product){
-let item=cart.find(i=>i.name===product.name);
-if(item){item.qty++;}
-else{cart.push({...product, qty:1});}
+function addToCart(p){
+let item=cart.find(i=>i.name===p.name);
+if(item){item.qty++}else{cart.push({...p,qty:1})}
 updateCart();
 }
 
 function updateCart(){
-localStorage.setItem("cart", JSON.stringify(cart));
+localStorage.setItem("cart",JSON.stringify(cart));
 document.getElementById("cart-count").innerText=cart.length;
 
-let items="";
-let total=0;
-
-cart.forEach((i,index)=>{
+let html="",total=0;
+cart.forEach((i,idx)=>{
 total+=i.price*i.qty;
-items+=`
+html+=`
 <div class="cart-item">
 ${i.name} x ${i.qty}
 <div>
-<button onclick="changeQty(${index},1)">+</button>
-<button onclick="changeQty(${index},-1)">-</button>
+<button onclick="changeQty(${idx},1)">+</button>
+<button onclick="changeQty(${idx},-1)">-</button>
 </div>
 </div>`;
 });
-
-document.getElementById("cart-items").innerHTML=items;
+document.getElementById("cart-items").innerHTML=html;
 document.getElementById("total").innerText=total;
 }
 
-function changeQty(i,val){
-cart[i].qty+=val;
-if(cart[i].qty<=0) cart.splice(i,1);
+function changeQty(i,v){
+cart[i].qty+=v;
+if(cart[i].qty<=0)cart.splice(i,1);
 updateCart();
 }
 
@@ -248,18 +294,55 @@ function toggleCart(){
 document.getElementById("cart").classList.toggle("active");
 }
 
-function prepareOrder(){
-let summary="";
-cart.forEach(i=>{
-summary+=`${i.name} x ${i.qty} = ₹${i.price*i.qty}\n`;
-});
-summary+=`\nTotal: ₹${document.getElementById("total").innerText}`;
-document.getElementById("order-data").value=summary;
-cart=[];
+function placeOrder(e){
+e.preventDefault();
+
+let id="ORD"+Date.now();
+let order={
+id,
+cart,
+total:document.getElementById("total").innerText,
+name:name.value,
+phone:phone.value,
+address:address.value
+};
+
+orders.push(order);
+localStorage.setItem("orders",JSON.stringify(orders));
 localStorage.removeItem("cart");
+cart=[];
+updateCart();
+
+alert("Order placed! ID: "+id);
 }
 
-renderFilters();
+function trackOrder(){
+let id=document.getElementById("trackId").value;
+let order=orders.find(o=>o.id===id);
+document.getElementById("trackResult").innerText=
+order?"Order Found! Preparing...":"Not found";
+}
+
+/* ADMIN */
+document.body.addEventListener("dblclick",()=>{
+document.getElementById("admin").classList.toggle("active");
+renderAdmin();
+});
+
+function renderAdmin(){
+let html="";
+orders.forEach(o=>{
+html+=`<p>${o.id} - ₹${o.total}</p>`;
+});
+document.getElementById("orders").innerHTML=html;
+}
+
+function clearOrders(){
+localStorage.removeItem("orders");
+orders=[];
+renderAdmin();
+}
+
 renderProducts();
 updateCart();
 </script>
