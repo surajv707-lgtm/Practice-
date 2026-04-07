@@ -1,18 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Blink Market</title>
+<title>Blink Market - Online Store</title>
+
+<meta name="description" content="Blink Market - Buy quality products at best price">
 
 <style>
 :root {
     --red:#e53935;
     --blue:#1e88e5;
     --gold:#d4af37;
-    --bg:#f4f6f8;
+    --bg:#f5f7fa;
 }
 
 body { margin:0; font-family:Arial; background:var(--bg); }
@@ -27,12 +28,6 @@ header {
 
 nav a { color:white; margin:0 10px; text-decoration:none; }
 
-.cart-count {
-    background:var(--gold);
-    padding:3px 8px;
-    border-radius:50%;
-}
-
 .container { padding:15px; }
 
 .grid {
@@ -43,55 +38,33 @@ nav a { color:white; margin:0 10px; text-decoration:none; }
 
 .card {
     background:white;
-    border-radius:12px;
     padding:12px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
-    transition:0.3s;
+    border-radius:10px;
 }
 
-.card:hover { transform:translateY(-5px); }
-
-.hero {
-    background:var(--gold);
-    padding:20px;
-    text-align:center;
-}
-
-/* QTY CONTROL */
 .qty {
     display:flex;
-    align-items:center;
-    justify-content:center;
     gap:8px;
-    margin-top:8px;
+    align-items:center;
 }
 
 .qty button {
     width:30px;
     height:30px;
-    border-radius:6px;
-    font-size:16px;
 }
 
-.minus { background:var(--gold); }
-.plus { background:var(--blue); color:white; }
-
-.qty span {
-    min-width:25px;
-    text-align:center;
-    font-weight:bold;
-}
-
-/* BUTTON */
-.add-btn {
+.add {
     width:100%;
-    margin-top:8px;
     background:var(--red);
     color:white;
     padding:8px;
-    border-radius:6px;
 }
 
+.hero {
+    background:var(--gold);
+    text-align:center;
+    padding:20px;
+}
 </style>
 </head>
 
@@ -105,16 +78,16 @@ nav a { color:white; margin:0 10px; text-decoration:none; }
 </nav>
 </header>
 
-<div id="app"></div>
+<main id="app"></main>
 
 <script>
 const PRODUCTS = [
-{ id:1,name:"Green Tea",price:199,images:["https://via.placeholder.com/200"]},
-{ id:2,name:"Honey",price:299,images:["https://via.placeholder.com/200"]},
-{ id:3,name:"Almonds",price:499,images:["https://via.placeholder.com/200"]}
+{ id:1,name:"Green Tea",price:199,image:"https://via.placeholder.com/200"},
+{ id:2,name:"Honey",price:299,image:"https://via.placeholder.com/200"},
+{ id:3,name:"Almonds",price:499,image:"https://via.placeholder.com/200"}
 ];
 
-let cart = JSON.parse(localStorage.getItem("neo_cart"))||[];
+let cart = JSON.parse(localStorage.getItem("neo_cart")) || [];
 
 function save(){
     localStorage.setItem("neo_cart",JSON.stringify(cart));
@@ -125,17 +98,17 @@ function updateCount(){
     count.innerText = cart.reduce((a,c)=>a+c.qty,0);
 }
 
-function qty(id){
-    let i = cart.find(x=>x.id===id);
+function getQty(id){
+    let i=cart.find(x=>x.id===id);
     return i?i.qty:0;
 }
 
-function change(id,val){
-    let i = cart.find(x=>x.id===id);
+function changeQty(id,val){
+    let item=cart.find(x=>x.id===id);
 
-    if(i){
-        i.qty += val;
-        if(i.qty<=0) cart = cart.filter(x=>x.id!==id);
+    if(item){
+        item.qty+=val;
+        if(item.qty<=0) cart=cart.filter(x=>x.id!==id);
     } else {
         cart.push({id,qty:1});
     }
@@ -147,85 +120,151 @@ function change(id,val){
 /* HOME */
 function home(){
 let html=`
-<div class="hero">
+<section class="hero">
 <h1>Blink Market</h1>
-<p>Fast & Fresh Deals</p>
-</div>
+<p>Best Deals Everyday</p>
+</section>
 
-<div class="container"><div class="grid">`;
+<section class="container">
+<div class="grid">`;
 
 PRODUCTS.forEach(p=>{
-let q=qty(p.id);
+let q=getQty(p.id);
 
 html+=`
-<div class="card">
-<img src="${p.images[0]}" width="100%">
+<article class="card">
+<img src="${p.image}" width="100%">
 <h3>${p.name}</h3>
 <p>₹${p.price}</p>
 
 ${q>0?`
 <div class="qty">
-<button class="minus" onclick="change(${p.id},-1)">-</button>
+<button onclick="changeQty(${p.id},-1)">-</button>
 <span>${q}</span>
-<button class="plus" onclick="change(${p.id},1)">+</button>
+<button onclick="changeQty(${p.id},1)">+</button>
 </div>
 `:
-`<button class="add-btn" onclick="change(${p.id},1)">Add to Cart</button>`}
+`<button class="add" onclick="changeQty(${p.id},1)">Add to Cart</button>`}
 
-</div>`;
+</article>`;
 });
 
-html+=`</div></div>`;
+html+=`</div></section>`;
 app.innerHTML=html;
 }
 
-/* CART */
+/* CART PAGE */
 function cartPage(){
-let html=`<div class="container"><h2>Cart</h2>`;
+let total=0;
+
+let html=`
+<section class="container">
+<h1>Your Cart</h1>
+`;
 
 if(cart.length===0){
-html+="Empty cart";
+html+="<p>Your cart is empty</p>";
 }else{
-let total=0;
 
 cart.forEach(c=>{
 let p=PRODUCTS.find(x=>x.id===c.id);
 total+=p.price*c.qty;
 
 html+=`
-<div>
+<article>
 <h3>${p.name}</h3>
 
 <div class="qty">
-<button class="minus" onclick="change(${p.id},-1)">-</button>
+<button onclick="changeQty(${p.id},-1)">-</button>
 <span>${c.qty}</span>
-<button class="plus" onclick="change(${p.id},1)">+</button>
+<button onclick="changeQty(${p.id},1)">+</button>
 </div>
-</div>`;
+
+<p>₹${p.price*c.qty}</p>
+<button onclick="removeItem(${p.id})">Remove</button>
+</article>
+<hr>`;
 });
 
-html+=`<h3>Total ₹${total}</h3>`;
+html+=`
+<h2>Total: ₹${total}</h2>
+<a href="#checkout"><button>Checkout</button></a>
+`;
 }
 
-html+="</div>";
+html+="</section>";
 app.innerHTML=html;
+}
+
+function removeItem(id){
+cart=cart.filter(x=>x.id!==id);
+save();
+render();
+}
+
+/* CHECKOUT */
+function checkout(){
+let total=cart.reduce((s,c)=>{
+let p=PRODUCTS.find(x=>x.id===c.id);
+return s+p.price*c.qty;
+},0);
+
+app.innerHTML=`
+<section class="container">
+<h1>Checkout</h1>
+
+<form id="orderForm">
+
+<label>Name</label>
+<input required>
+
+<label>Email</label>
+<input type="email" required>
+
+<label>Phone</label>
+<input required>
+
+<label>Address</label>
+<textarea required></textarea>
+
+<label>Notes</label>
+<textarea></textarea>
+
+<h2>Total ₹${total}</h2>
+
+<button type="submit">Place Order</button>
+</form>
+
+</section>
+`;
+
+document.getElementById("orderForm").onsubmit=function(e){
+e.preventDefault();
+
+alert("Order placed!");
+
+cart=[];
+save();
+
+location.hash="#home";
+};
 }
 
 /* ROUTER */
 function router(){
-if(location.hash=="#cart") cartPage();
+let hash=location.hash || "#home";
+
+if(hash=="#cart") cartPage();
+else if(hash=="#checkout") checkout();
 else home();
 }
 
-/* BACK FIX */
+/* FIXED BACK BEHAVIOR */
 window.addEventListener("popstate",()=>{
-if(location.hash==""||location.hash=="#home"){
-window.close();
-}else{
-history.back();
-}
+// Do nothing — let browser handle naturally
 });
 
+/* INIT */
 function render(){
 updateCount();
 router();
