@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nandu Area Shop</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif;}
+
+body {background:#f5f7fb; color:#333;}
+
+header {
+    background:#2c7be5;
+    color:#fff;
+    padding:20px;
+    text-align:center;
+}
+
+header h1 {font-size:24px;}
+header p {font-size:14px;}
+
+.filters {
+    display:flex;
+    overflow:auto;
+    gap:10px;
+    padding:10px;
+    background:#fff;
+}
+
+.filters button {
+    padding:8px 14px;
+    border:none;
+    background:#e3e8f0;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+.filters button.active {
+    background:#2c7be5;
+    color:#fff;
+}
+
+.products {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:15px;
+    padding:15px;
+}
+
+.card {
+    background:#fff;
+    border-radius:12px;
+    padding:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+
+.card img {
+    width:100%;
+    border-radius:10px;
+}
+
+.card h3 {font-size:14px; margin:8px 0;}
+.card p {font-size:12px; color:#777;}
+.price {font-weight:bold; margin:5px 0;}
+
+button.add {
+    width:100%;
+    padding:8px;
+    border:none;
+    background:#2c7be5;
+    color:#fff;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* Cart Button */
+.cart-btn {
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    background:#2c7be5;
+    color:#fff;
+    padding:12px 15px;
+    border-radius:50px;
+    cursor:pointer;
+}
+
+.cart-modal {
+    position:fixed;
+    top:0;
+    right:-100%;
+    width:100%;
+    max-width:350px;
+    height:100%;
+    background:#fff;
+    transition:0.3s;
+    padding:15px;
+    overflow:auto;
+}
+
+.cart-modal.active {right:0;}
+
+.cart-item {
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+}
+
+.cart-item button {
+    padding:2px 6px;
+}
+
+/* Form */
+form input, form textarea {
+    width:100%;
+    margin:5px 0;
+    padding:8px;
+}
+
+/* WhatsApp */
+.whatsapp {
+    position:fixed;
+    bottom:80px;
+    right:20px;
+    background:#25D366;
+    color:#fff;
+    padding:10px 15px;
+    border-radius:50px;
+    text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Nandu Area Shop</h1>
+<p>Fresh products delivered to your door</p>
+</header>
+
+<div class="filters" id="filters"></div>
+
+<div class="products" id="products"></div>
+
+<div class="cart-btn" onclick="toggleCart()">
+🛒 (<span id="cart-count">0</span>)
+</div>
+
+<div class="cart-modal" id="cart">
+<h2>Cart</h2>
+<div id="cart-items"></div>
+<h3>Total: ₹<span id="total">0</span></h3>
+
+<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" onsubmit="prepareOrder()">
+<input type="hidden" name="order" id="order-data">
+
+<input required placeholder="Your Name" name="name">
+<input required placeholder="Phone Number" name="phone">
+<textarea required placeholder="Address" name="address"></textarea>
+<textarea placeholder="Instructions" name="notes"></textarea>
+
+<button type="submit">Place Order</button>
+</form>
+</div>
+
+<a class="whatsapp" href="https://wa.me/919999999999">Chat</a>
+
+<script>
+const products = [
+{name:"Aashirvaad Atta", price:280, cat:"Groceries", img:"https://i.ibb.co/1.jpg", desc:"Premium wheat flour"},
+{name:"Amul Butter", price:280, cat:"Dairy", img:"https://i.ibb.co/2.jpg", desc:"Fresh butter"},
+{name:"Milk 1L", price:60, cat:"Dairy", img:"https://i.ibb.co/3.jpg", desc:"Fresh milk"},
+{name:"Bread", price:40, cat:"Groceries", img:"https://i.ibb.co/4.jpg", desc:"Soft bread"},
+{name:"Biscuits", price:30, cat:"Snacks", img:"https://i.ibb.co/5.jpg", desc:"Crunchy"},
+{name:"Chips", price:20, cat:"Snacks", img:"https://i.ibb.co/6.jpg", desc:"Spicy chips"},
+{name:"Coke", price:40, cat:"Beverages", img:"https://i.ibb.co/7.jpg", desc:"Cold drink"},
+{name:"Juice", price:50, cat:"Beverages", img:"https://i.ibb.co/8.jpg", desc:"Fruit juice"}
+];
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function renderProducts(filter="All"){
+const container = document.getElementById("products");
+container.innerHTML="";
+
+products.filter(p=>filter==="All"||p.cat===filter)
+.forEach(p=>{
+container.innerHTML+=`
+<div class="card">
+<img src="${p.img}" loading="lazy" alt="${p.name}">
+<h3>${p.name}</h3>
+<p>${p.desc}</p>
+<div class="price">₹${p.price}</div>
+<button class="add" onclick='addToCart(${JSON.stringify(p)})'>Add</button>
+</div>`;
+});
+}
+
+function renderFilters(){
+const cats=["All",...new Set(products.map(p=>p.cat))];
+const container=document.getElementById("filters");
+
+cats.forEach(c=>{
+container.innerHTML+=`<button onclick="renderProducts('${c}')">${c}</button>`;
+});
+}
+
+function addToCart(product){
+let item=cart.find(i=>i.name===product.name);
+if(item){item.qty++;}
+else{cart.push({...product, qty:1});}
+updateCart();
+}
+
+function updateCart(){
+localStorage.setItem("cart", JSON.stringify(cart));
+document.getElementById("cart-count").innerText=cart.length;
+
+let items="";
+let total=0;
+
+cart.forEach((i,index)=>{
+total+=i.price*i.qty;
+items+=`
+<div class="cart-item">
+${i.name} x ${i.qty}
+<div>
+<button onclick="changeQty(${index},1)">+</button>
+<button onclick="changeQty(${index},-1)">-</button>
+</div>
+</div>`;
+});
+
+document.getElementById("cart-items").innerHTML=items;
+document.getElementById("total").innerText=total;
+}
+
+function changeQty(i,val){
+cart[i].qty+=val;
+if(cart[i].qty<=0) cart.splice(i,1);
+updateCart();
+}
+
+function toggleCart(){
+document.getElementById("cart").classList.toggle("active");
+}
+
+function prepareOrder(){
+let summary="";
+cart.forEach(i=>{
+summary+=`${i.name} x ${i.qty} = ₹${i.price*i.qty}\n`;
+});
+summary+=`\nTotal: ₹${document.getElementById("total").innerText}`;
+document.getElementById("order-data").value=summary;
+cart=[];
+localStorage.removeItem("cart");
+}
+
+renderFilters();
+renderProducts();
+updateCart();
+</script>
+
+</body>
+</html>
