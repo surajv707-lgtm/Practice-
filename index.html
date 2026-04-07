@@ -1,22 +1,27 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Blink Market - Online Store</title>
+<title>Blink Market</title>
 
-<meta name="description" content="Blink Market - Buy quality products at best price">
+<meta name="description" content="Blink Market - Fast shopping experience">
 
 <style>
 :root {
     --red:#e53935;
     --blue:#1e88e5;
     --gold:#d4af37;
-    --bg:#f5f7fa;
+    --bg:#f4f6f9;
 }
 
-body { margin:0; font-family:Arial; background:var(--bg); }
+body {
+    margin:0;
+    font-family:Arial;
+    background:var(--bg);
+}
 
 header {
     background:var(--blue);
@@ -26,45 +31,90 @@ header {
     justify-content:space-between;
 }
 
-nav a { color:white; margin:0 10px; text-decoration:none; }
+nav a {
+    color:white;
+    margin:0 10px;
+    text-decoration:none;
+    font-weight:bold;
+}
 
 .container { padding:15px; }
 
+/* HERO */
+.hero {
+    background:linear-gradient(45deg,var(--gold),#ffd54f);
+    text-align:center;
+    padding:25px;
+}
+
+/* GRID */
 .grid {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
     gap:15px;
 }
 
+/* CARD */
 .card {
     background:white;
     padding:12px;
-    border-radius:10px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+.card:hover { transform:translateY(-5px); }
+
+/* BUTTON */
+.add-btn {
+    width:100%;
+    background:var(--red);
+    color:white;
+    padding:8px;
+    border:none;
+    border-radius:6px;
 }
 
+/* QTY */
 .qty {
     display:flex;
-    gap:8px;
+    justify-content:center;
     align-items:center;
+    gap:8px;
 }
 
 .qty button {
     width:30px;
     height:30px;
+    border:none;
+    border-radius:6px;
 }
 
-.add {
+.minus { background:var(--gold); }
+.plus { background:var(--blue); color:white; }
+
+/* CART */
+.cart-item {
+    background:white;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+/* FORM */
+form input, form textarea {
     width:100%;
-    background:var(--red);
-    color:white;
-    padding:8px;
+    padding:10px;
+    margin:5px 0;
 }
 
-.hero {
-    background:var(--gold);
-    text-align:center;
-    padding:20px;
+form button {
+    width:100%;
+    padding:10px;
+    background:var(--blue);
+    color:white;
+    border:none;
 }
+
 </style>
 </head>
 
@@ -78,128 +128,117 @@ nav a { color:white; margin:0 10px; text-decoration:none; }
 </nav>
 </header>
 
-<main id="app"></main>
+<div id="app"></div>
 
 <script>
-const PRODUCTS = [
-{ id:1,name:"Green Tea",price:199,image:"https://via.placeholder.com/200"},
-{ id:2,name:"Honey",price:299,image:"https://via.placeholder.com/200"},
-{ id:3,name:"Almonds",price:499,image:"https://via.placeholder.com/200"}
+document.addEventListener("DOMContentLoaded", ()=>{
+
+/* PRODUCTS */
+const PRODUCTS=[
+{id:1,name:"Green Tea",price:199,img:"https://via.placeholder.com/200"},
+{id:2,name:"Honey",price:299,img:"https://via.placeholder.com/200"},
+{id:3,name:"Almonds",price:499,img:"https://via.placeholder.com/200"}
 ];
 
-let cart = JSON.parse(localStorage.getItem("neo_cart")) || [];
+let cart=JSON.parse(localStorage.getItem("neo_cart"))||[];
 
+/* FUNCTIONS */
 function save(){
-    localStorage.setItem("neo_cart",JSON.stringify(cart));
-    updateCount();
+localStorage.setItem("neo_cart",JSON.stringify(cart));
+updateCount();
 }
 
 function updateCount(){
-    count.innerText = cart.reduce((a,c)=>a+c.qty,0);
+document.getElementById("count").innerText=
+cart.reduce((a,c)=>a+c.qty,0);
 }
 
-function getQty(id){
-    let i=cart.find(x=>x.id===id);
-    return i?i.qty:0;
+function qty(id){
+let i=cart.find(x=>x.id===id);
+return i?i.qty:0;
 }
 
-function changeQty(id,val){
-    let item=cart.find(x=>x.id===id);
+function change(id,val){
+let item=cart.find(x=>x.id===id);
 
-    if(item){
-        item.qty+=val;
-        if(item.qty<=0) cart=cart.filter(x=>x.id!==id);
-    } else {
-        cart.push({id,qty:1});
-    }
+if(item){
+item.qty+=val;
+if(item.qty<=0) cart=cart.filter(x=>x.id!==id);
+}else{
+cart.push({id,qty:1});
+}
 
-    save();
-    render();
+save();
+render();
 }
 
 /* HOME */
 function home(){
 let html=`
-<section class="hero">
+<div class="hero">
 <h1>Blink Market</h1>
-<p>Best Deals Everyday</p>
-</section>
+<p>Fast Delivery ⚡</p>
+</div>
 
-<section class="container">
-<div class="grid">`;
+<div class="container"><div class="grid">`;
 
 PRODUCTS.forEach(p=>{
-let q=getQty(p.id);
+let q=qty(p.id);
 
 html+=`
-<article class="card">
-<img src="${p.image}" width="100%">
+<div class="card">
+<img src="${p.img}" width="100%">
 <h3>${p.name}</h3>
 <p>₹${p.price}</p>
 
 ${q>0?`
 <div class="qty">
-<button onclick="changeQty(${p.id},-1)">-</button>
+<button class="minus" onclick="change(${p.id},-1)">-</button>
 <span>${q}</span>
-<button onclick="changeQty(${p.id},1)">+</button>
+<button class="plus" onclick="change(${p.id},1)">+</button>
 </div>
 `:
-`<button class="add" onclick="changeQty(${p.id},1)">Add to Cart</button>`}
+`<button class="add-btn" onclick="change(${p.id},1)">Add to Cart</button>`}
 
-</article>`;
+</div>`;
 });
 
-html+=`</div></section>`;
+html+=`</div></div>`;
 app.innerHTML=html;
 }
 
-/* CART PAGE */
+/* CART */
 function cartPage(){
+let html=`<div class="container"><h2>Your Cart</h2>`;
 let total=0;
 
-let html=`
-<section class="container">
-<h1>Your Cart</h1>
-`;
-
 if(cart.length===0){
-html+="<p>Your cart is empty</p>";
+html+="<p>Cart is empty</p>";
 }else{
-
 cart.forEach(c=>{
 let p=PRODUCTS.find(x=>x.id===c.id);
 total+=p.price*c.qty;
 
 html+=`
-<article>
+<div class="cart-item">
 <h3>${p.name}</h3>
 
 <div class="qty">
-<button onclick="changeQty(${p.id},-1)">-</button>
+<button class="minus" onclick="change(${p.id},-1)">-</button>
 <span>${c.qty}</span>
-<button onclick="changeQty(${p.id},1)">+</button>
+<button class="plus" onclick="change(${p.id},1)">+</button>
 </div>
 
 <p>₹${p.price*c.qty}</p>
-<button onclick="removeItem(${p.id})">Remove</button>
-</article>
-<hr>`;
+</div>`;
 });
 
-html+=`
-<h2>Total: ₹${total}</h2>
-<a href="#checkout"><button>Checkout</button></a>
-`;
+html+=`<h2>Total ₹${total}</h2>
+<button onclick="location.hash='#checkout'">Checkout</button>`;
 }
 
-html+="</section>";
+html+="</div>";
 app.innerHTML=html;
-}
-
-function removeItem(id){
-cart=cart.filter(x=>x.id!==id);
-save();
-render();
 }
 
 /* CHECKOUT */
@@ -210,59 +249,38 @@ return s+p.price*c.qty;
 },0);
 
 app.innerHTML=`
-<section class="container">
-<h1>Checkout</h1>
+<div class="container">
+<h2>Checkout</h2>
 
-<form id="orderForm">
+<form id="form">
+<input placeholder="Name" required>
+<input placeholder="Email" required>
+<input placeholder="Phone" required>
+<textarea placeholder="Address" required></textarea>
 
-<label>Name</label>
-<input required>
-
-<label>Email</label>
-<input type="email" required>
-
-<label>Phone</label>
-<input required>
-
-<label>Address</label>
-<textarea required></textarea>
-
-<label>Notes</label>
-<textarea></textarea>
-
-<h2>Total ₹${total}</h2>
-
-<button type="submit">Place Order</button>
+<h3>Total ₹${total}</h3>
+<button>Place Order</button>
 </form>
-
-</section>
+</div>
 `;
 
-document.getElementById("orderForm").onsubmit=function(e){
+document.getElementById("form").onsubmit=(e)=>{
 e.preventDefault();
-
 alert("Order placed!");
-
 cart=[];
 save();
-
 location.hash="#home";
 };
 }
 
 /* ROUTER */
 function router(){
-let hash=location.hash || "#home";
+let hash=location.hash||"#home";
 
 if(hash=="#cart") cartPage();
 else if(hash=="#checkout") checkout();
 else home();
 }
-
-/* FIXED BACK BEHAVIOR */
-window.addEventListener("popstate",()=>{
-// Do nothing — let browser handle naturally
-});
 
 /* INIT */
 function render(){
@@ -272,6 +290,8 @@ router();
 
 window.addEventListener("hashchange",render);
 render();
+
+});
 </script>
 
 </body>
